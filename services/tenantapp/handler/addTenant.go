@@ -3,6 +3,7 @@ package handler
 import (
 	"context"
 	"net/http"
+	"tenantapp/logger"
 	"time"
 
 	"github.com/gin-gonic/gin"

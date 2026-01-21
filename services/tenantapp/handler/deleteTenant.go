@@ -11,9 +11,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func UpdateTenant(ctx *gin.Context) {
+func DeleteTenant(ctx *gin.Context) {
 	logger := logger.LoggingInit()
-	logger.Info("Updating existing tenant.")
+	logger.Info("Deleting existing tenant.")
 
 	c, cancel := context.WithTimeout(ctx.Request.Context(), 2*time.Second)
 	defer cancel()

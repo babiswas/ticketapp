@@ -3,33 +3,32 @@ package handler
 import (
 	"context"
 	"net/http"
+	"tenantapp/helper"
 	"tenantapp/logger"
+	"tenantapp/models"
 	"time"
 
 	"github.com/gin-gonic/gin"
 )
 
-func TokenGenerator(ctx *gin.Context) {
+func AddTenant(ctx *gin.Context) {
 	logger := logger.LoggingInit()
-	logger.Info("Executing token generator handler.")
+	logger.Info("Adding new tenant.")
 
 	c, cancel := context.WithTimeout(ctx.Request.Context(), 2*time.Second)
 	defer cancel()
 
-	var user_info_obj struct {
-		Username string `json:"username"`
-		Role     string `json:"role"`
-	}
+	tenant_obj := models.Tenant{}
 
-	if err := ctx.ShouldBindJSON(&user_info_obj); err != nil {
+	if err := ctx.ShouldBindJSON(&tenant_obj); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": "Failed to generate token.Check payload.",
+			"error": "Failed to add tenant.Check your input.",
 		})
 		return
 	}
 
-	logger.Info("Generating token using token handler:")
-	token, err := helper.TokenGenHelper(c, user_info_obj.Username, user_info_obj.Role)
+	logger.Info("Adding new tenant:")
+	tenant_var, err := helper.AddTenantHelper(c, tenant_obj)
 	if err != nil {
 		if err == context.DeadlineExceeded {
 			logger.Error("Request deadline exceeded.")
@@ -45,7 +44,7 @@ func TokenGenerator(ctx *gin.Context) {
 		})
 		return
 	}
-	logger.Info("Sucessfully generated jwt token.")
-	data := map[string]string{"token": token}
+	logger.Info("Sucessfully added the tenant.")
+	data := map[string]string{"status": "successfully added" + tenant_var}
 	ctx.AsciiJSON(http.StatusOK, data)
 }

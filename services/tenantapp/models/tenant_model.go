@@ -1,4 +1,4 @@
-package model
+package models
 
 type Tenant struct {
 	Name    string `json:"name"`
